@@ -24,5 +24,5 @@ class TesseractController {
     fun isDniDorso(@RequestParam img: MultipartFile): Boolean = tesseractService.isDniDorso(img.inputStream)
 
     @PostMapping("api/ocr/pdf/is_certificate")
-    fun isCertificate(@RequestParam file: MultipartFile): Boolean = tesseractService.isCertificate(file.inputStream)
+    fun isCertificate(@RequestParam pdf: MultipartFile): Boolean = tesseractService.isCertificate(pdf.inputStream)
 }

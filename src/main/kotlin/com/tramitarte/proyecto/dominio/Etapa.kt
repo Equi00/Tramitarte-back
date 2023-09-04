@@ -81,10 +81,10 @@ class Etapa4(): Etapa() {
     }
 
     override fun verificarEtapa(tramite: Tramite) {
-        if(tramite.documentacionDescendientes!!.size !in tramite.cantidadDescendientes..tramite.cantidadDescendientes * 3) {
-            throw ExcepcionDocumentacionInvalida("El tramite no tiene documentos traducidos")
+        if(tramite.documentacionDescendientes!!.size < 1) {
+            throw ExcepcionDocumentacionInvalida("El tramite no tiene todos los documentos de descendientes necesarios")
         }
-        tramite.etapa = Etapa4("Traducir toda la documentación")
+        tramite.etapa = Etapa5("Cargar documentación traducida")
     }
 }
 
@@ -97,7 +97,7 @@ class Etapa5(): Etapa() {
     }
 
     override fun verificarEtapa(tramite: Tramite) {
-        if(!tramite.tieneDocumentacionTraducirda()) {
+        if(false) {
             throw ExcepcionDocumentacionInvalida("El trámite no tiene documentos traducidos")
         }
 //        tramite.etapa = Etapa5("Felicidades, ya tiene todo lo necesario para presentarse al " +

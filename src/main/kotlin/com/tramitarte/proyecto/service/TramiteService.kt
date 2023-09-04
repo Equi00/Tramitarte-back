@@ -60,6 +60,9 @@ class TramiteService {
     ): Tramite {
         val tramite = tramiteRepository.findById(id).get()
         tramite.documentacionDescendientes = documentacionDescendientes
+        tramite.agregarAdjuntosATraducir(documentacionDescendientes)
+        tramite.avanzarEtapa()
+        etapaRepository.save(tramite.etapa)
         val tramitePersistido = tramiteRepository.save(tramite)
         return tramitePersistido
     }

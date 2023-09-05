@@ -1,5 +1,6 @@
 package com.tramitarte.proyecto.controller
 
+import com.tramitarte.proyecto.dominio.Alerta
 import com.tramitarte.proyecto.dominio.Mensaje
 import com.tramitarte.proyecto.dominio.Notificacion
 import com.tramitarte.proyecto.dominio.Usuario
@@ -15,7 +16,7 @@ class NotificacionRestController {
     @Autowired
     lateinit var notificacionRepository: NotificacionRepository
 
-    @GetMapping("/notificacion/mensajes")
+    @GetMapping("/notificacion")
     fun buscarPorUsuaruioDestino(
         @RequestParam usuario: Optional<Usuario>
     ): List<Notificacion> =
@@ -30,4 +31,26 @@ class NotificacionRestController {
         var mensajeNuevo = Mensaje(origen.get(), destino.get(), mensaje)
         notificacionRepository.save(mensajeNuevo)
     }
+
+    @PostMapping("/notificacion/alerta")
+    fun crearAlerta(
+        @RequestParam origen: Optional<Usuario>,
+        @RequestParam destino: Optional<Usuario>,
+        @RequestParam descripcion: String
+    ) {
+        var alertaNueva = Alerta(origen.get(), destino.get(), descripcion)
+        notificacionRepository.save(alertaNueva)
+    }
+
+    @DeleteMapping("/notificacion/mensaje")
+    fun borrarMensaje(
+        @RequestParam mensaje: Optional<Mensaje>
+    ) =
+        notificacionRepository.delete(mensaje.get())
+
+    @DeleteMapping("/notificacion/alerta")
+    fun borrarAlerta(
+        @RequestParam mensaje: Optional<Alerta>
+    ) =
+        notificacionRepository.delete(mensaje.get())
 }

@@ -23,6 +23,7 @@ abstract class Notificacion() {
     @ManyToOne
     @JoinColumn(name = "usuario_destino_id")
     open lateinit var usuarioDestino: Usuario
+    open lateinit var tipo: String
 }
 
 @Entity
@@ -35,6 +36,7 @@ class Mensaje(): Notificacion() {
         usuarioOrigen = _usuarioOrigen
         usuarioDestino = _usuarioDestino
         mensaje = _mensaje
+        tipo = "Mensaje"
     }
 
     var mensaje: String = ""
@@ -50,6 +52,7 @@ class Alerta(): Notificacion() {
         usuarioOrigen = _usuarioOrigen
         usuarioDestino = _usuarioDestino
         descripcion = _descripcion
+        tipo = "Alerta"
     }
 
     var descripcion = ""

@@ -1,6 +1,8 @@
 package com.tramitarte.proyecto.service
 
 import com.tramitarte.proyecto.dominio.SolicitudAVO
+import com.tramitarte.proyecto.dominio.Tramite
+import com.tramitarte.proyecto.dominio.Usuario
 import com.tramitarte.proyecto.repository.SolicitudAVORepository
 import com.tramitarte.proyecto.repository.TramiteRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,5 +47,11 @@ class SolicitudAVOService {
     private fun validarSiExisteSolicitud(solicitudAVO: SolicitudAVO) {
         val solicitudPersistida = solicitudAVO.id?.let { solicitudAVORepository.findByIdOrNull(solicitudAVO.id) }
         Assert.isTrue(solicitudPersistida !== null, "La solicitud a modificar no existe.")
+    }
+
+    fun buscarAVOPorUsuario(usuario: Usuario): SolicitudAVO? {
+        val tramiteABuscar = tramiteService.buscarPorUsuario(usuario)
+        return tramiteABuscar?.solicitudAvo
+
     }
 }

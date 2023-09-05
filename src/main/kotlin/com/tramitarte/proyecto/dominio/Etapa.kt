@@ -65,7 +65,7 @@ class Etapa3(): Etapa() {
     }
 
     override fun verificarEtapa(tramite: Tramite) {
-        if(tramite.documentacionAVO!!.size < 3) {
+        if(tramite.documentacionAVO!!.size < 1) {
             throw ExcepcionDocumentacionInvalida("La documentación presentada no es valida")
         }
         tramite.etapa = Etapa4("Cargar documentación de descendientes")

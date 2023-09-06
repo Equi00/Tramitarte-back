@@ -1,19 +1,32 @@
 package com.tramitarte.proyecto.tesseract
 
+import io.ktor.utils.io.core.*
 import net.sourceforge.tess4j.Tesseract
+import org.apache.pdfbox.io.IOUtils
 import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.rendering.ImageType
+import org.apache.pdfbox.rendering.PDFRenderer
 import org.apache.pdfbox.text.PDFTextStripper
+import org.apache.pdfbox.tools.imageio.ImageIOUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.InputStream
 import javax.imageio.ImageIO
+import kotlin.io.use
 
 @Service
 class TesseractService {
     @Autowired
     lateinit var tesseract: Tesseract
+
+    val phraseCertificate = "registro del estado civil y capacidad de las personas"
+    val phraseCertificate2 = "registro provincial de las personas"
+    val phraseBirthCertificate = "nacimiento"
+    val phraseMarriageCertificate = "matrimonio"
+    val phraseDeathCertificate1 = "defunción"
+    val phraseDeathCertificate2 = "falleció"
 
     fun recognizedImage(inputStream: InputStream): String{
         try {
@@ -37,6 +50,31 @@ class TesseractService {
         }
     }
 
+    fun extractImagesFromPDFWithOCR(inputStream: InputStream): String {
+        try {
+            val document = PDDocument.load(inputStream)
+            val pdfRenderer = PDFRenderer(document)
+            var result = ""
+
+            for (pageIndex in 0 until document.numberOfPages) {
+                val image = pdfRenderer.renderImageWithDPI(pageIndex, 300f, ImageType.RGB)
+
+                // Aplicar Tesseract a la imagen
+                result += tesseract.doOCR(image)
+
+                // No es necesario eliminar la imagen en este caso, ya que no estamos escribiendo archivos intermedios
+
+                // Cerramos el documento solo cuando hayamos terminado de procesar todas las páginas
+                if (pageIndex == document.numberOfPages - 1) {
+                    document.close()
+                }
+            }
+            return result
+        } catch (exception: Exception) {
+            throw exception
+        }
+    }
+
     fun isDniFrente(inputStream: InputStream): Boolean{
         val text = recognizedImage(inputStream)
         return containsPhraseFrente(text)
@@ -48,23 +86,45 @@ class TesseractService {
     }
 
     fun isCertificate(file: InputStream): Boolean {
-        val text = recognizedPDF(file)
+        val text = extractImagesFromPDFWithOCR(file)
         return containsPhrasePDF(text)
     }
 
-    private fun containsPhrasePDF(text: String): Boolean{
+    fun isMarriageCertificate(file: InputStream): Boolean {
+        val text = extractImagesFromPDFWithOCR(file)
         val textMin = text.lowercase()
+        return containsPhrasePDFMarriage(textMin)
+    }
 
-        val phraseCertificate = "registro del estado civil y capacidad de las personas"
-        val phraseCertificate2 = "registro provincial de las personas"
-        val phraseBirthCertificate = "nacimiento"
-        val phraseMarriageCertificate = "matrimonio"
-        val phraseDeathCertificate1 = "defunción"
-        val phraseDeathCertificate2 = "falleció"
+    fun isBirthCertificate(file: InputStream): Boolean {
+        val text = extractImagesFromPDFWithOCR(file)
+        val textMin = text.lowercase()
+        return containsPhrasePDFBirth(textMin)
+    }
 
-        return (textMin.contains(phraseBirthCertificate) && (textMin.contains(phraseCertificate) || textMin.contains(phraseCertificate2)))
-                || (textMin.contains(phraseMarriageCertificate) && (textMin.contains(phraseCertificate) || textMin.contains(phraseCertificate2)))
-                || ((textMin.contains(phraseDeathCertificate1) && textMin.contains(phraseDeathCertificate2)) && (textMin.contains(phraseCertificate) || textMin.contains(phraseCertificate2)))
+    fun isDeathCertificate(file: InputStream): Boolean {
+        val text = extractImagesFromPDFWithOCR(file)
+        val textMin = text.lowercase()
+        return containsPhrasePDFDeath(textMin)
+    }
+
+    private fun containsPhrasePDFDeath(text: String): Boolean{
+        return ((text.contains(phraseDeathCertificate1) && text.contains(phraseDeathCertificate2)) && (text.contains(phraseCertificate) || text.contains(phraseCertificate2)))
+    }
+
+    private fun containsPhrasePDFBirth(text: String): Boolean{
+        return (text.contains(phraseBirthCertificate) && (text.contains(phraseCertificate) || text.contains(phraseCertificate2)))
+    }
+
+    private fun containsPhrasePDFMarriage(text: String): Boolean{
+        return (text.contains(phraseMarriageCertificate) && (text.contains(phraseCertificate) || text.contains(phraseCertificate2)))
+
+    }
+
+    private fun containsPhrasePDF(text: String): Boolean{
+        return (text.contains(phraseBirthCertificate) && (text.contains(phraseCertificate) || text.contains(phraseCertificate2)))
+                || (text.contains(phraseMarriageCertificate) && (text.contains(phraseCertificate) || text.contains(phraseCertificate2)))
+                || ((text.contains(phraseDeathCertificate1) && text.contains(phraseDeathCertificate2)) && (text.contains(phraseCertificate) || text.contains(phraseCertificate2)))
     }
 
     // Como los dni tienen un dibujo por detras de los caracteres, tesseract no puede distinguir a veces bien los

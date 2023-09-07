@@ -158,4 +158,14 @@ class TramiteRestController {
             throw error
         }
     }
+
+    @GetMapping("/solicitud/usuario/{idUsuario}")
+    fun buscarAVOPorUsuario(@PathVariable idUsuario: Long): ResponseEntity<SolicitudAVO?> {
+        try {
+            val usuario = usuarioService.buscarPorId(idUsuario)
+
+            return ResponseEntity(usuario?.let { solicitudAVOService.buscarAVOPorUsuario(it) }, HttpStatus.OK)
+        } catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }}
 }

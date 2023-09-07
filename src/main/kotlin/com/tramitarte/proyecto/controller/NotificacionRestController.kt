@@ -6,7 +6,9 @@ import com.tramitarte.proyecto.dominio.Notificacion
 import com.tramitarte.proyecto.dominio.Usuario
 import com.tramitarte.proyecto.repository.NotificacionRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import java.util.Optional
 
 @RestController
@@ -16,11 +18,16 @@ class NotificacionRestController {
     @Autowired
     lateinit var notificacionRepository: NotificacionRepository
 
-    @GetMapping("/notificacion")
-    fun buscarPorUsuaruioDestino(
+    @GetMapping("/notificacion/mensaje")
+    fun buscarNotificaciones(
         @RequestParam usuario: Optional<Usuario>
-    ): List<Notificacion> =
-        notificacionRepository.findAllByUsuarioDestino(usuario.get())
+    ) {
+        try {
+            notificacionRepository.findAllByUsuarioDestino(usuario.get())
+        } catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }
+    }
 
     @PostMapping("/notificacion/mensaje")
     fun crearMensaje(
@@ -28,8 +35,12 @@ class NotificacionRestController {
         @RequestParam destino: Optional<Usuario>,
         @RequestParam mensaje: String
     ) {
-        var mensajeNuevo = Mensaje(origen.get(), destino.get(), mensaje)
-        notificacionRepository.save(mensajeNuevo)
+        try {
+            var mensajeNuevo = Mensaje(origen.get(), destino.get(), mensaje)
+            notificacionRepository.save(mensajeNuevo)
+        } catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }
     }
 
     @PostMapping("/notificacion/alerta")
@@ -38,8 +49,12 @@ class NotificacionRestController {
         @RequestParam destino: Optional<Usuario>,
         @RequestParam descripcion: String
     ) {
-        var alertaNueva = Alerta(origen.get(), destino.get(), descripcion)
-        notificacionRepository.save(alertaNueva)
+        try {
+            var alertaNueva = Alerta(origen.get(), destino.get(), descripcion)
+            notificacionRepository.save(alertaNueva)
+        } catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }
     }
 
     @DeleteMapping("/notificacion/mensaje")

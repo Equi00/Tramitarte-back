@@ -18,7 +18,7 @@ class NotificacionRestController {
     @Autowired
     lateinit var notificacionRepository: NotificacionRepository
 
-    @GetMapping("/notificacion/mensaje")
+    @GetMapping("/notificacion")
     fun buscarNotificaciones(
         @RequestParam usuario: Optional<Usuario>
     ) {

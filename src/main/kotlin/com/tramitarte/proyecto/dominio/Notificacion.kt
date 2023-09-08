@@ -23,23 +23,8 @@ abstract class Notificacion() {
     @ManyToOne
     @JoinColumn(name = "usuario_destino_id")
     open lateinit var usuarioDestino: Usuario
+    open lateinit var descripcion: String
     open lateinit var tipo: String
-}
-
-@Entity
-class Mensaje(): Notificacion() {
-    constructor(
-        _usuarioOrigen: Usuario,
-        _usuarioDestino: Usuario,
-        _mensaje: String
-    ) : this() {
-        usuarioOrigen = _usuarioOrigen
-        usuarioDestino = _usuarioDestino
-        mensaje = _mensaje
-        tipo = "Mensaje"
-    }
-
-    var mensaje: String = ""
 }
 
 @Entity
@@ -55,6 +40,5 @@ class Alerta(): Notificacion() {
         tipo = "Alerta"
     }
 
-    var descripcion = ""
     var alertaVisualizada: Boolean = false
 }

@@ -1,9 +1,6 @@
 package com.tramitarte.proyecto.service
 
-import com.tramitarte.proyecto.dominio.Notificacion
-import com.tramitarte.proyecto.dominio.Rol
-import com.tramitarte.proyecto.dominio.UpdateUserDTO
-import com.tramitarte.proyecto.dominio.Usuario
+import com.tramitarte.proyecto.dominio.*
 import com.tramitarte.proyecto.repository.NotificacionRepository
 import com.tramitarte.proyecto.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -54,8 +51,17 @@ class UsuarioService {
         return usuarioRepository.findByNombreAndAndApellidoAndPrecio(nombre, apellido, precio)
     }
 
-    fun buscarNotificaciones(usuario: Optional<Usuario>): List<Notificacion> {
-        return notificacionRepository.findAllByUsuarioDestino(usuario.get())
+    fun buscarNotificaciones(idUsuarioDestino: Long): List<NotificacionDTO> {
+        try {
+            val usuarioDestino = usuarioRepository.findById(idUsuarioDestino).get()
+
+            val notificaciones = notificacionRepository.findAllByUsuarioDestino(usuarioDestino)
+
+            return notificaciones.map { it -> NotificacionDTO(it.id, it.usuarioOrigen.id, it.usuarioDestino.id, it.descripcion) }
+        }catch (e: Exception){
+            throw IllegalArgumentException("No se pueden obtener notificaciones de este usuario",e)
+        }
+
     }
 
     fun actualizar(id: Long?, update: UpdateUserDTO): Usuario {

@@ -36,9 +36,9 @@ class UsuarioRestController {
         @RequestParam nombre: Optional<String>, @RequestParam apellido: Optional<String>, @RequestParam precio: Optional<Float>): Usuario =
         usuarioService.buscarPorNombreYPrecio(nombre, apellido, precio)
 
-//    @GetMapping("/usuario/notificaciones")
-//    fun buscarNotificaciones(@RequestParam usuario: Usuario) =
-//        usuarioService.buscarNotificaciones(usuario as Optional<Usuario>)
+    @GetMapping("/usuario/{id}/notificaciones")
+    fun buscarNotificaciones(@PathVariable id: Long) =
+        usuarioService.buscarNotificaciones(id)
 
     @PostMapping("/usuario")
     fun crear(@RequestBody usuario: Usuario): ResponseEntity<Usuario> {

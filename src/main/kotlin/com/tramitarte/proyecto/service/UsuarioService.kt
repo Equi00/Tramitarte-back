@@ -19,6 +19,11 @@ class UsuarioService {
     @Autowired
     lateinit var notificacionRepository: NotificacionRepository
 
+    fun buscarTraductores(): List<Usuario>{
+        return usuarioRepository.findByRol(Rol.TRADUCTOR)
+    }
+
+
     fun buscarPorRol(rol: Rol): List<Usuario> {
         return usuarioRepository.findAll()
     }
@@ -39,6 +44,11 @@ class UsuarioService {
             throw IllegalArgumentException("No existe un usuario registrado con ese correo electrónico.", exception)
         }
     }
+
+    fun buscarTraductorPorCorreo(correoElectronico: String): List<Usuario> {
+        return usuarioRepository.findByRolAndCorreoElectronicoContaining(Rol.TRADUCTOR, correoElectronico)
+    }
+
 
     fun buscarPorNombreYPrecio(nombre: Optional<String>, apellido: Optional<String>, precio: Optional<Float>): Usuario {
         return usuarioRepository.findByNombreAndAndApellidoAndPrecio(nombre, apellido, precio)

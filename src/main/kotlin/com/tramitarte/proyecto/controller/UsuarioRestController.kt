@@ -21,8 +21,9 @@ class UsuarioRestController {
 
     @GetMapping("/usuario/traductores")
     fun buscarTraductores(): List<Usuario> {
-        return usuarioService.buscarPorRol(Rol.TRADUCTOR)
+        return usuarioService.buscarTraductores()
     }
+
 
     @GetMapping("/usuario/solicitante")
     fun buscarSolicitantes(): List<Usuario> {
@@ -61,6 +62,15 @@ class UsuarioRestController {
     fun buscarPorCorreoElectronico(@RequestParam correoElectronico: String): ResponseEntity<Usuario> {
         try {
             return ResponseEntity.ok(usuarioService.buscarPorCorreoElectronico(correoElectronico))
+        } catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }
+    }
+
+    @GetMapping("/usuario/traductor-correo")
+    fun buscarTraductorPorCorreo(@RequestParam correoElectronico: String): List<Usuario> {
+        try {
+            return usuarioService.buscarTraductorPorCorreo(correoElectronico)
         } catch (exception: IllegalArgumentException) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
         }

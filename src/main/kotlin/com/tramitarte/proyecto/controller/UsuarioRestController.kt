@@ -1,6 +1,7 @@
 package com.tramitarte.proyecto.controller
 
 import com.tramitarte.proyecto.dominio.Rol
+import com.tramitarte.proyecto.dominio.SolicitudTraduccion
 import com.tramitarte.proyecto.dominio.UpdateUserDTO
 import com.tramitarte.proyecto.dominio.Usuario
 import com.tramitarte.proyecto.service.UsuarioService
@@ -65,6 +66,16 @@ class UsuarioRestController {
         } catch (exception: IllegalArgumentException) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
         }
+    }
+
+    @GetMapping("/usuario/{id}/solicitud-traduccion")
+    fun buscarSolicitudTraduccion(@PathVariable id: Long): List<SolicitudTraduccion?>{
+        return usuarioService.buscarSolicitudTraduccion(id)
+    }
+
+    @GetMapping("/usuario/{id}/solicitud-traduccion/solicitante")
+    fun buscarSolicitudTraduccionSolicitante(@PathVariable id: Long): List<SolicitudTraduccion?>{
+        return usuarioService.buscarSolicitudTraduccionSolicitante(id)
     }
 
     @GetMapping("/usuario/traductor-correo")

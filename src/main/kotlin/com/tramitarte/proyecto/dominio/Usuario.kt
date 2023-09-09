@@ -20,9 +20,6 @@ class Usuario(username: String, nombre: String, apellido: String, rol: Rol, prec
     var fotoPerfil: String = fotoPerfil
 
     fun updateUser(update: UpdateUserDTO){
-        nombre = update.name
-        apellido = update.surname
-        username = update.username
-        fechaDeNacimiento = update.birthdate
+          username = update.username
     }
 }

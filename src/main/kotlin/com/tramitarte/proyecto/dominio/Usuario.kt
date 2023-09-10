@@ -21,5 +21,7 @@ class Usuario(username: String, nombre: String, apellido: String, rol: Rol, prec
 
     fun updateUser(update: UpdateUserDTO){
           username = update.username
+          apellido = update.apellido
+          nombre = update.nombre
     }
 }

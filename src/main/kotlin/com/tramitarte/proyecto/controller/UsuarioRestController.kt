@@ -73,9 +73,14 @@ class UsuarioRestController {
         return usuarioService.buscarSolicitudTraduccion(id)
     }
 
-    @GetMapping("/usuario/{id}/solicitud-traduccion/solicitante")
-    fun buscarSolicitudTraduccionSolicitante(@PathVariable id: Long): List<SolicitudTraduccion?>{
-        return usuarioService.buscarSolicitudTraduccionSolicitante(id)
+    @GetMapping("/usuario/solicitud-traduccion/solicitante/{idSolicitante}/traductor/{idTraductor}")
+    fun buscarSolicitudTraduccionSolicitanteYTraductor(@PathVariable idSolicitante: Long, @PathVariable idTraductor: Long): List<SolicitudTraduccion?>{
+        return usuarioService.buscarSolicitudTraduccionSolicitanteYTraductor(idSolicitante, idTraductor)
+    }
+
+    @GetMapping("/usuario/solicitud/solicitante/{idSolicitante}")
+    fun buscarSolicitudPorSolicitante(@PathVariable idSolicitante: Long): SolicitudTraduccion?{
+        return usuarioService.buscarSolicitudPorSolicitante(idSolicitante)
     }
 
     @GetMapping("/usuario/traductor-correo")

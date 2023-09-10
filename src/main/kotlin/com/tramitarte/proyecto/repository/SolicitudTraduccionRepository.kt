@@ -10,5 +10,9 @@ interface SolicitudTraduccionRepository: JpaRepository<SolicitudTraduccion, Long
 
     fun findByTraductor(traductor: Usuario?): List<SolicitudTraduccion?>
 
-    fun findBySolicitante(solicitante: Usuario?): List<SolicitudTraduccion?>
+    fun deleteBySolicitante(solicitante: Usuario?)
+
+    fun findBySolicitante(solicitante: Usuario?): SolicitudTraduccion?
+
+    fun findBySolicitanteAndTraductor(solicitante: Usuario?, traductor: Usuario?): List<SolicitudTraduccion?>
 }

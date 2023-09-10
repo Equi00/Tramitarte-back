@@ -74,4 +74,11 @@ class NotificacionRestController {
     ) {
         servicioNotificaciones.eliminarSolicitudTraduccion(id)
     }
+
+    @DeleteMapping("/notificacion/solicitud/solicitante/{id}")
+    fun borrarSolicitudTraduccionPorSolicitante(
+            @PathVariable id: Long
+    ) {
+        servicioNotificaciones.borrarSolicitudTraduccionPorSolicitante(id)
+    }
 }

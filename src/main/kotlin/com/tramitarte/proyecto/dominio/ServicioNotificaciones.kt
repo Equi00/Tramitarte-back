@@ -41,4 +41,12 @@ class ServicioNotificaciones {
     fun eliminarSolicitudTraduccion(idSolicitud: Long){
         solicitudTraduccionRepository.deleteById(idSolicitud)
     }
+
+    @Transactional
+    fun borrarSolicitudTraduccionPorSolicitante(idSolicitante: Long){
+        val solicitante = usuarioRepository.findById(idSolicitante).get()
+        val traductorDeSolicitud = solicitudTraduccionRepository.findBySolicitante(solicitante)!!.traductor
+        solicitante.id?.let { traductorDeSolicitud.id?.let { it1 -> generarAlerta(it, it1, "El solicitante "+solicitante.correoElectronico+" ha eliminado su solicitud") } }
+        solicitudTraduccionRepository.deleteBySolicitante(solicitante)
+    }
 }

@@ -78,7 +78,18 @@ class UsuarioService {
     }
 
     @Transactional
-    fun buscarSolicitudTraduccionSolicitante(idSolicitante: Long): List<SolicitudTraduccion?>{
+    fun buscarSolicitudTraduccionSolicitanteYTraductor(idSolicitante: Long, idTraductor: Long): List<SolicitudTraduccion?>{
+        try{
+            val solicitante = usuarioRepository.findById(idSolicitante).get()
+            val traductor = usuarioRepository.findById(idTraductor).get()
+            return solicitudTraduccionRepository.findBySolicitanteAndTraductor(solicitante, traductor)
+        }catch (e: Exception){
+            throw IllegalArgumentException("No se pueden obtener solicitudes de traduccion de este usuario",e)
+        }
+    }
+
+    @Transactional
+    fun buscarSolicitudPorSolicitante(idSolicitante: Long): SolicitudTraduccion?{
         try{
             val solicitante = usuarioRepository.findById(idSolicitante).get()
             return solicitudTraduccionRepository.findBySolicitante(solicitante)

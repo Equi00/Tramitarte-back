@@ -1,14 +1,13 @@
 package com.tramitarte.proyecto.service
 
-import com.tramitarte.proyecto.dominio.Notificacion
-import com.tramitarte.proyecto.dominio.Rol
-import com.tramitarte.proyecto.dominio.UpdateUserDTO
-import com.tramitarte.proyecto.dominio.Usuario
+import com.tramitarte.proyecto.dominio.*
 import com.tramitarte.proyecto.repository.NotificacionRepository
+import com.tramitarte.proyecto.repository.SolicitudTraduccionRepository
 import com.tramitarte.proyecto.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
@@ -18,19 +17,26 @@ class UsuarioService {
     lateinit var usuarioRepository: UsuarioRepository
     @Autowired
     lateinit var notificacionRepository: NotificacionRepository
+    @Autowired
+    lateinit var solicitudTraduccionRepository: SolicitudTraduccionRepository
+    @Transactional
+    fun buscarTraductores(): List<Usuario>{
+        return usuarioRepository.findByRol(Rol.TRADUCTOR)
+    }
 
+    @Transactional
     fun buscarPorRol(rol: Rol): List<Usuario> {
         return usuarioRepository.findAll()
     }
-
+    @Transactional
     fun buscarPorId(id: Long): Usuario? {
         return usuarioRepository.findById(id).getOrNull()
     }
-
+    @Transactional
     fun crear(usuario: Usuario): Usuario {
         return usuarioRepository.save(usuario)
     }
-
+    @Transactional
     fun buscarPorCorreoElectronico(correoElectonico: String): Usuario {
         validarFormatoCorreoElectronico(correoElectonico)
         try {
@@ -39,15 +45,60 @@ class UsuarioService {
             throw IllegalArgumentException("No existe un usuario registrado con ese correo electrónico.", exception)
         }
     }
+    @Transactional
+    fun buscarTraductorPorCorreo(correoElectronico: String): List<Usuario> {
+        return usuarioRepository.findByRolAndCorreoElectronicoContaining(Rol.TRADUCTOR, correoElectronico)
+    }
 
+    @Transactional
     fun buscarPorNombreYPrecio(nombre: Optional<String>, apellido: Optional<String>, precio: Optional<Float>): Usuario {
         return usuarioRepository.findByNombreAndAndApellidoAndPrecio(nombre, apellido, precio)
     }
+    @Transactional
+    fun buscarNotificaciones(idUsuarioDestino: Long): List<NotificacionDTO> {
+        try {
+            val usuarioDestino = usuarioRepository.findById(idUsuarioDestino).get()
 
-    fun buscarNotificaciones(usuario: Optional<Usuario>): List<Notificacion> {
-        return notificacionRepository.findAllByUsuarioDestino(usuario.get())
+            val notificaciones = notificacionRepository.findAllByUsuarioDestino(usuarioDestino)
+
+            return notificaciones.map { it -> NotificacionDTO(it.id, it.usuarioOrigen.id, it.usuarioDestino.id, it.descripcion) }
+        }catch (e: Exception){
+            throw IllegalArgumentException("No se pueden obtener notificaciones de este usuario",e)
+        }
     }
 
+    @Transactional
+    fun buscarSolicitudTraduccion(idTraductor: Long): List<SolicitudTraduccion?>{
+        try{
+            val traductor = usuarioRepository.findById(idTraductor).get()
+            return solicitudTraduccionRepository.findByTraductor(traductor)
+        }catch (e: Exception){
+            throw IllegalArgumentException("No se pueden obtener solicitudes de traduccion de este usuario",e)
+        }
+    }
+
+    @Transactional
+    fun buscarSolicitudTraduccionSolicitanteYTraductor(idSolicitante: Long, idTraductor: Long): List<SolicitudTraduccion?>{
+        try{
+            val solicitante = usuarioRepository.findById(idSolicitante).get()
+            val traductor = usuarioRepository.findById(idTraductor).get()
+            return solicitudTraduccionRepository.findBySolicitanteAndTraductor(solicitante, traductor)
+        }catch (e: Exception){
+            throw IllegalArgumentException("No se pueden obtener solicitudes de traduccion de este usuario",e)
+        }
+    }
+
+    @Transactional
+    fun buscarSolicitudPorSolicitante(idSolicitante: Long): SolicitudTraduccion?{
+        try{
+            val solicitante = usuarioRepository.findById(idSolicitante).get()
+            return solicitudTraduccionRepository.findBySolicitante(solicitante)
+        }catch (e: Exception){
+            throw IllegalArgumentException("No se pueden obtener solicitudes de traduccion de este usuario",e)
+        }
+    }
+
+    @Transactional
     fun actualizar(id: Long?, update: UpdateUserDTO): Usuario {
         if (!usuarioRepository.existsById(id!!)) throw IllegalArgumentException("No existe un usuario con ese id")
 

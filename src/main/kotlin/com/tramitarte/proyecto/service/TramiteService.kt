@@ -35,7 +35,8 @@ class TramiteService {
     fun cargaDocumentacionUsuario(id: Long, documentacionUsuario: List<Documentacion>): Tramite {
         val tramite = tramiteRepository.findById(id).get()
         tramite.documentacionUsuario = documentacionUsuario
-        tramite.agregarAdjuntosATraducir(documentacionUsuario)
+        val documento: MutableList<Documentacion> = mutableListOf(documentacionUsuario[2]) //se guarda solo el certificado de nacimiento del usuario y no los dni
+        tramite.agregarAdjuntosATraducir(documento)
         tramite.avanzarEtapa()
         etapaRepository.save(tramite.etapa)
         val tramitePersistido = tramiteRepository.save(tramite)

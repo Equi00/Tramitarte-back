@@ -1,6 +1,7 @@
 package com.tramitarte.proyecto.controller
 
 import com.tramitarte.proyecto.dominio.Rol
+import com.tramitarte.proyecto.dominio.SolicitudTraduccion
 import com.tramitarte.proyecto.dominio.UpdateUserDTO
 import com.tramitarte.proyecto.dominio.Usuario
 import com.tramitarte.proyecto.service.UsuarioService
@@ -21,8 +22,9 @@ class UsuarioRestController {
 
     @GetMapping("/usuario/traductores")
     fun buscarTraductores(): List<Usuario> {
-        return usuarioService.buscarPorRol(Rol.TRADUCTOR)
+        return usuarioService.buscarTraductores()
     }
+
 
     @GetMapping("/usuario/solicitante")
     fun buscarSolicitantes(): List<Usuario> {
@@ -35,9 +37,9 @@ class UsuarioRestController {
         @RequestParam nombre: Optional<String>, @RequestParam apellido: Optional<String>, @RequestParam precio: Optional<Float>): Usuario =
         usuarioService.buscarPorNombreYPrecio(nombre, apellido, precio)
 
-//    @GetMapping("/usuario/notificaciones")
-//    fun buscarNotificaciones(@RequestParam usuario: Usuario) =
-//        usuarioService.buscarNotificaciones(usuario as Optional<Usuario>)
+    @GetMapping("/usuario/{id}/notificaciones")
+    fun buscarNotificaciones(@PathVariable id: Long) =
+        usuarioService.buscarNotificaciones(id)
 
     @PostMapping("/usuario")
     fun crear(@RequestBody usuario: Usuario): ResponseEntity<Usuario> {
@@ -61,6 +63,30 @@ class UsuarioRestController {
     fun buscarPorCorreoElectronico(@RequestParam correoElectronico: String): ResponseEntity<Usuario> {
         try {
             return ResponseEntity.ok(usuarioService.buscarPorCorreoElectronico(correoElectronico))
+        } catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }
+    }
+
+    @GetMapping("/usuario/{id}/solicitud-traduccion")
+    fun buscarSolicitudTraduccion(@PathVariable id: Long): List<SolicitudTraduccion?>{
+        return usuarioService.buscarSolicitudTraduccion(id)
+    }
+
+    @GetMapping("/usuario/solicitud-traduccion/solicitante/{idSolicitante}/traductor/{idTraductor}")
+    fun buscarSolicitudTraduccionSolicitanteYTraductor(@PathVariable idSolicitante: Long, @PathVariable idTraductor: Long): List<SolicitudTraduccion?>{
+        return usuarioService.buscarSolicitudTraduccionSolicitanteYTraductor(idSolicitante, idTraductor)
+    }
+
+    @GetMapping("/usuario/solicitud/solicitante/{idSolicitante}")
+    fun buscarSolicitudPorSolicitante(@PathVariable idSolicitante: Long): SolicitudTraduccion?{
+        return usuarioService.buscarSolicitudPorSolicitante(idSolicitante)
+    }
+
+    @GetMapping("/usuario/traductor-correo")
+    fun buscarTraductorPorCorreo(@RequestParam correoElectronico: String): List<Usuario> {
+        try {
+            return usuarioService.buscarTraductorPorCorreo(correoElectronico)
         } catch (exception: IllegalArgumentException) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
         }

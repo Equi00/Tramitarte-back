@@ -106,6 +106,19 @@ class TramiteRestController {
         }
     }
 
+    @PostMapping("/carga/documentacion/traducida/{id}")
+    fun cargaDocumentacionTraducida(
+            @PathVariable id: Long,
+            @RequestBody documentacionTraducida: MutableList<Documentacion>
+    ): Tramite {
+        try {
+            val tramite = tramiteService.cargarDocumentacionTraducida(id, documentacionTraducida)
+            return tramite
+        } catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }
+    }
+
     @PostMapping("/avanzar-etapa/{id}")
     fun avanzarEtapa(@PathVariable id: Long): ResponseEntity<Etapa> {
         try {

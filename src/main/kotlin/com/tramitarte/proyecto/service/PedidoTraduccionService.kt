@@ -31,4 +31,10 @@ class PedidoTraduccionService {
         val traductor = usuarioRepository.findById(idTraductor).get()
         return pedidoTraduccionRepository.findByTraductor(traductor)
     }
+
+    @Transactional
+    fun buscarPorTramite(idTramite: Long): List<PedidoTraduccion?>{
+        val tramite = tramiteRepository.findById(idTramite).get()
+        return pedidoTraduccionRepository.findByTramite(tramite)
+    }
 }

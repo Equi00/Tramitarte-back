@@ -60,7 +60,8 @@ class TranslatorService {
                 fileTranslatedList.add(fileEncoded)
                 fileTXT.delete()
             }
-            tramiteService.cargarDocumentacionTraducida(id, fileTranslatedList)
+            // no se va a usar la traduccion porque no funciona bien con tesseract, si fueran pdf con texto y no con imagenes seria ideal.
+           // tramiteService.cargarDocumentacionTraducida(id, fileTranslatedList)
         } catch (exception: Exception) {
             throw exception
         }

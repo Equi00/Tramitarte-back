@@ -97,10 +97,9 @@ class Etapa5(): Etapa() {
     }
 
     override fun verificarEtapa(tramite: Tramite) {
-        if(false) {
+        if(tramite.adjuntosATraducir.size != tramite.documentacionTraducida!!.size) {
             throw ExcepcionDocumentacionInvalida("El trámite no tiene documentos traducidos")
         }
-//        tramite.etapa = Etapa5("Felicidades, ya tiene todo lo necesario para presentarse al " +
-//                "consuldado y pedir su ciudadania")
+        tramite.etapa = Etapa5("Ha terminado el tramite, haga click para descargar los archivos")
     }
 }

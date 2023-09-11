@@ -22,8 +22,8 @@ class Tramite(codigo: String, tipo: String, etapa: Etapa) {
     var documentacionAVO: List<Documentacion>? = null
     @OneToMany(cascade = [CascadeType.ALL])
     var documentacionDescendientes: List<Documentacion>? = null
-    @OneToMany
-    var documentacionTraducida: MutableList<Documentacion> = mutableListOf()
+    @OneToMany(cascade = [CascadeType.ALL])
+    var documentacionTraducida: List<Documentacion>? = null
     @ManyToOne
     var solicitudAvo: SolicitudAVO? = null
     var cantidadDescendientes: Long = 0
@@ -31,7 +31,7 @@ class Tramite(codigo: String, tipo: String, etapa: Etapa) {
         solicitudAvo = avo
     }
 
-    fun tieneDocumentacionTraducirda(): Boolean = documentacionTraducida.size == adjuntosATraducir.size
+    fun tieneDocumentacionTraducirda(): Boolean = documentacionTraducida!!.size == adjuntosATraducir.size
 
     fun avanzarEtapa() {
         etapa.verificarEtapa(this)

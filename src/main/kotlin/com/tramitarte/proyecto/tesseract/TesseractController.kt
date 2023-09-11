@@ -37,4 +37,13 @@ class TesseractController {
 
     @PostMapping("api/ocr/pdf/is_death")
     fun isDeathCertificate(@RequestParam pdf: MultipartFile): Boolean = tesseractService.isDeathCertificate(pdf.inputStream)
+
+    @PostMapping("api/ocr/pdf/is_birth_italy")
+    fun isBirthCertificateItaly(@RequestParam pdf: MultipartFile): Boolean = tesseractService.isBirthCertificateItaly(pdf.inputStream)
+
+    @PostMapping("api/ocr/pdf/is_marriage_italy")
+    fun isMarriageCertificateItaly(@RequestParam pdf: MultipartFile): Boolean = tesseractService.isMarriageCertificateItaly(pdf.inputStream)
+
+    @PostMapping("api/ocr/pdf/is_death_italy")
+    fun isDeathCertificateItaly(@RequestParam pdf: MultipartFile): Boolean = tesseractService.isDeathCertificateItaly(pdf.inputStream)
 }

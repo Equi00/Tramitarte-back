@@ -1,5 +1,6 @@
 package com.tramitarte.proyecto.service
 
+import com.tramitarte.proyecto.dominio.Documentacion
 import com.tramitarte.proyecto.dominio.SolicitudDescarga
 import com.tramitarte.proyecto.repository.SolicitudDescargaRepository
 import com.tramitarte.proyecto.repository.UsuarioRepository
@@ -15,10 +16,11 @@ class SolicitudDescargaService {
     lateinit var usuarioRepository: UsuarioRepository
 
     @Transactional
-    fun crearSolicitudDescarga(idSolicitante: Long, idTraductor: Long) {
+    fun crearSolicitudDescarga(idSolicitante: Long, idTraductor: Long, documentos: MutableList<Documentacion>) {
         val solicitante = usuarioRepository.findById(idSolicitante).get()
         val traductor = usuarioRepository.findById(idTraductor).get()
         val solicitudDescarga = SolicitudDescarga(solicitante, traductor)
+        solicitudDescarga.documentacion = documentos
         solicitudDescargaRepository.save(solicitudDescarga)
     }
 

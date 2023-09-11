@@ -113,6 +113,16 @@ class TramiteRestController {
         }
     }
 
+    @GetMapping("/documentacion/{id}")
+    fun mostrarDocumentacion(@PathVariable id: Long): ResponseEntity<DocumentListDTO> {
+        try {
+            return tramiteService.mostrarDocumentacion(id)
+        }
+        catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }
+    }
+
     @PostMapping("/avanzar-etapa/{id}")
     fun avanzarEtapa(@PathVariable id: Long): ResponseEntity<Etapa> {
         try {

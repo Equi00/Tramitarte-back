@@ -25,8 +25,14 @@ class TesseractService {
     val phraseCertificate2 = "registro provincial de las personas"
     val phraseBirthCertificate = "nacimiento"
     val phraseMarriageCertificate = "matrimonio"
-    val phraseDeathCertificate1 = "defunción"
-    val phraseDeathCertificate2 = "falleció"
+    val phraseDeathCertificate1 = "defuncion"
+    val phraseDeathCertificate2 = "fallecio"
+
+    val phraseCertificateItaly = "stato civile"
+    val phraseCertificateItaly2 = "Ufficio dello Stato Civile"
+    val phraseBirthItalyCertificate = "nascita"
+    val phraseDeathItalyCertificate = "certificato di morte"
+    val phraseDeathItalyCertificate2 = "morte"
 
     fun recognizedImage(inputStream: InputStream): String{
         try {
@@ -108,8 +114,38 @@ class TesseractService {
         return containsPhrasePDFDeath(textMin)
     }
 
+    fun isBirthCertificateItaly(file: InputStream): Boolean {
+        val text = extractImagesFromPDFWithOCR(file)
+        val textMin = text.lowercase()
+        return containsPhrasePDFBirthItaly(textMin)
+    }
+
+    fun isMarriageCertificateItaly(file: InputStream): Boolean {
+        val text = extractImagesFromPDFWithOCR(file)
+        val textMin = text.lowercase()
+        return containsPhrasePDFMarriageItaly(textMin)
+    }
+
+    fun isDeathCertificateItaly(file: InputStream): Boolean {
+        val text = extractImagesFromPDFWithOCR(file)
+        val textMin = text.lowercase()
+        return containsPhrasePDFDeathItaly(textMin)
+    }
+
+    private fun containsPhrasePDFDeathItaly(text: String): Boolean{
+        return ((text.contains(phraseDeathItalyCertificate) || text.contains(phraseDeathItalyCertificate2)))
+    }
+
+    private fun containsPhrasePDFMarriageItaly(text: String): Boolean{
+        return (text.contains(phraseMarriageCertificate) && (text.contains(phraseCertificateItaly) || text.contains(phraseCertificateItaly2)))
+    }
+
+    private fun containsPhrasePDFBirthItaly(text: String): Boolean{
+        return (text.contains(phraseBirthItalyCertificate) && (text.contains(phraseCertificateItaly) || text.contains(phraseCertificateItaly2)))
+    }
+
     private fun containsPhrasePDFDeath(text: String): Boolean{
-        return ((text.contains(phraseDeathCertificate1) && text.contains(phraseDeathCertificate2)) && (text.contains(phraseCertificate) || text.contains(phraseCertificate2)))
+        return ((text.contains(phraseDeathCertificate1) || text.contains(phraseDeathCertificate2)))
     }
 
     private fun containsPhrasePDFBirth(text: String): Boolean{

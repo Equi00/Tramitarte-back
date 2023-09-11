@@ -15,6 +15,6 @@ class SolicitudDescarga(solicitante: Usuario?, traductor: Usuario?) {
     @ManyToOne
     @JoinColumn(name = "solicitante_id")
     var solicitante: Usuario? = solicitante
-    @OneToMany
-    var documentacionTraducida: MutableList<Documentacion> = mutableListOf()
+    @OneToMany(cascade = [CascadeType.ALL])
+    var documentacion: List<Documentacion>? = null
 }

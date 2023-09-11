@@ -1,5 +1,6 @@
 package com.tramitarte.proyecto.controller
 
+import com.tramitarte.proyecto.dominio.Documentacion
 import com.tramitarte.proyecto.dominio.SolicitudDescarga
 import com.tramitarte.proyecto.repository.SolicitudDescargaRepository
 import com.tramitarte.proyecto.service.SolicitudDescargaService
@@ -9,7 +10,9 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -23,9 +26,9 @@ class SolicitudDescargaController {
     lateinit var  solicitudDescargaService: SolicitudDescargaService
 
     @PostMapping("/solicitud-descarga/solicitante/{idSolicitante}/traductor/{idTraductor}")
-    fun crearSolicitudDescarga(@PathVariable idSolicitante: Long, @PathVariable idTraductor: Long){
+    fun crearSolicitudDescarga(@PathVariable idSolicitante: Long, @PathVariable idTraductor: Long, @RequestBody documentos: MutableList<Documentacion>){
         try{
-            solicitudDescargaService.crearSolicitudDescarga(idSolicitante, idTraductor)
+            solicitudDescargaService.crearSolicitudDescarga(idSolicitante, idTraductor, documentos)
         }catch(e: Exception) {
             throw IllegalArgumentException("No se pudo crear la solicitud de descarga",e)
         }

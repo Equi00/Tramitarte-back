@@ -1,6 +1,7 @@
 package com.tramitarte.proyecto.controller
 
 import com.tramitarte.proyecto.dominio.*
+import com.tramitarte.proyecto.service.DocumentacionService
 import com.tramitarte.proyecto.service.SolicitudAVOService
 import com.tramitarte.proyecto.service.TramiteService
 import com.tramitarte.proyecto.service.UsuarioService
@@ -42,6 +43,9 @@ class TramiteRestController {
 
     @Autowired
     lateinit var usuarioService: UsuarioService
+
+    @Autowired
+    lateinit var documentacionService: DocumentacionService
 
     @GetMapping("/tramite/usuario/{idUsuario}")
     fun buscarTramitePorUsuario(@PathVariable idUsuario: Long): ResponseEntity<Tramite?> {
@@ -113,12 +117,29 @@ class TramiteRestController {
         }
     }
 
+
     @GetMapping("/documentacion/{id}")
     fun mostrarDocumentacion(@PathVariable id: Long): ResponseEntity<DocumentListDTO> {
         try {
             return tramiteService.mostrarDocumentacion(id)
         }
         catch (exception: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
+        }
+    }
+
+
+
+    @PostMapping("/modificar/documento/{id}")
+    fun modificarDocumento(
+        @PathVariable id: Long,
+        @RequestBody documento: String
+    ): ResponseEntity<String> {
+        try {
+            val doc = documentacionService.modificar(id, documento)
+            return ResponseEntity("Documentación guardada con éxito", HttpStatus.OK)
+        } catch (exception: IllegalArgumentException) {
+
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
         }
     }

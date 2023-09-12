@@ -128,7 +128,7 @@ class TramiteRestController {
     @PostMapping("/modificar/documento/{id}")
     fun modificarDocumento(
         @PathVariable id: Long,
-        @RequestBody documento: String
+        @RequestBody documento: Documentacion
     ): ResponseEntity<String> {
         try {
             val doc = documentacionService.modificar(id, documento)

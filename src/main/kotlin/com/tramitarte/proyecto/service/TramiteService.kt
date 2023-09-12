@@ -69,23 +69,25 @@ class TramiteService {
     }
 
     @Transactional
+    fun cargarDocumentacionTraducida(
+            id: Long,
+            documentosTraducidos: MutableList<Documentacion>
+    ): Tramite {
+        val tramite = tramiteRepository.findById(id).get()
+        tramite.documentacionTraducida = documentosTraducidos
+        tramite.avanzarEtapa()
+        etapaRepository.save(tramite.etapa)
+        val tramitePersistido = tramiteRepository.save(tramite)
+        return tramitePersistido
+    }
+
+    @Transactional
     fun avanzarEtapa(id: Long): Etapa {
         val tramite = tramiteRepository.findById(id).get()
         tramite.avanzarEtapa()
         etapaRepository.save(tramite.etapa)
         tramiteRepository.save(tramite)
         return tramite.etapa
-    }
-
-    @Transactional
-    fun cargarDocumentacionTraducida(
-        id: Long,
-        documentosTraducidos: List<Documentacion>
-    ): ResponseEntity<List<Documentacion>> {
-        val tramite = tramiteRepository.findById(id).get()
-        tramite.documentacionTraducida = documentosTraducidos.toMutableList()
-        tramiteRepository.save(tramite)
-        return ResponseEntity(documentosTraducidos, HttpStatus.OK)
     }
 
     fun mostrarDocumentacion( id: Long): ResponseEntity<DocumentListDTO> {

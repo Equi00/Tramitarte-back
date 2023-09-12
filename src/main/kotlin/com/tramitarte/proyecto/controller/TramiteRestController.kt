@@ -113,6 +113,17 @@ class TramiteRestController {
     }
 
 
+    @PostMapping("/carga/documentacion/traducida/{id}")
+    fun cargaDocumentacionTraducida(
+            @PathVariable id: Long,
+            @RequestBody documentacionTraducida: MutableList<Documentacion>
+    ): Tramite {
+        try {
+            val tramite = tramiteService.cargarDocumentacionTraducida(id, documentacionTraducida)
+            return tramite
+        } catch (exception: IllegalArgumentException) {
+
+
     @GetMapping("/documentacion/{id}")
     fun mostrarDocumentacion(@PathVariable id: Long): ResponseEntity<DocumentListDTO> {
         try {
@@ -134,6 +145,7 @@ class TramiteRestController {
             val doc = documentacionService.modificar(id, documento)
             return ResponseEntity("Documentación guardada con éxito", HttpStatus.OK)
         } catch (exception: IllegalArgumentException) {
+
 
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
         }

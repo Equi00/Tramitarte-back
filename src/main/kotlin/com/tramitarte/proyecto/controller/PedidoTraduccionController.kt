@@ -34,6 +34,15 @@ class PedidoTraduccionController {
         }
     }
 
+    @GetMapping("/pedido/tramite/{id}")
+    fun buscarPedidoPorTramite(@PathVariable id: Long): List<PedidoTraduccion?>{
+        try{
+            return pedidoTraduccionService.buscarPorTramite(id)
+        }catch(e: Exception) {
+            throw IllegalArgumentException("No se encontro el pedido",e)
+        }
+    }
+
     @DeleteMapping("/pedido/{id}")
     fun eliminarPedido(@PathVariable id: Long){
         try{

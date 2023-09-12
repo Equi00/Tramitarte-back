@@ -90,6 +90,12 @@ class TramiteService {
         return tramite.etapa
     }
 
+    fun mostrarDocumentacion( id: Long): ResponseEntity<DocumentListDTO> {
+        val tramite= tramiteRepository.findById(id).get()
+        var lista = listOf(tramite.documentacionAVO,tramite.documentacionUsuario,tramite.documentacionDescendientes,tramite.documentacionTraducida).flatMap { it!! }
+        return ResponseEntity(DocumentListDTO(lista), HttpStatus.OK)
+    }
+
     fun eliminar(id: Long) {
         validarTramiteExistente(id)
         tramiteRepository.deleteById(id)

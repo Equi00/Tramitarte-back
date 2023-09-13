@@ -4,6 +4,7 @@ import com.tramitarte.proyecto.dominio.Rol
 import com.tramitarte.proyecto.dominio.SolicitudTraduccion
 import com.tramitarte.proyecto.dominio.UpdateUserDTO
 import com.tramitarte.proyecto.dominio.Usuario
+import com.tramitarte.proyecto.repository.UsuarioRepository
 import com.tramitarte.proyecto.service.UsuarioService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -19,6 +20,8 @@ import java.util.*
 class UsuarioRestController {
     @Autowired
     lateinit var usuarioService: UsuarioService
+    @Autowired
+    lateinit var usuarioRepository: UsuarioRepository
 
     @GetMapping("/usuario/traductores")
     fun buscarTraductores(): List<Usuario> {
@@ -57,6 +60,11 @@ class UsuarioRestController {
         } catch (illegalArgumentExceptcion: IllegalArgumentException) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, illegalArgumentExceptcion.message)
         }
+    }
+
+    @GetMapping("/usuario/{id}")
+    fun traerPorId(@PathVariable id: Long): Usuario{
+        return usuarioRepository.findById(id).get()
     }
 
     @GetMapping("/usuario")

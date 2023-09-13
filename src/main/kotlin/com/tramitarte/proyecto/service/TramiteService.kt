@@ -3,6 +3,7 @@ package com.tramitarte.proyecto.service
 import com.tramitarte.proyecto.dominio.*
 import com.tramitarte.proyecto.repository.EtapaRepository
 import com.tramitarte.proyecto.repository.TramiteRepository
+import com.tramitarte.proyecto.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,6 +22,9 @@ class TramiteService {
 
     @Autowired
     lateinit var usuarioService: UsuarioService
+
+    @Autowired
+    lateinit var usuarioRepository: UsuarioRepository
 
     @Transactional
     fun iniciarTramite(idUsuario: Long): Tramite {
@@ -73,8 +77,9 @@ class TramiteService {
             id: Long,
             documentosTraducidos: MutableList<Documentacion>
     ): Tramite {
-        val tramite = tramiteRepository.findById(id).get()
-        tramite.documentacionTraducida = documentosTraducidos
+        val usuario = usuarioRepository.findById(id).get()
+        val tramite = tramiteRepository.findByUsuario(usuario)
+        tramite!!.documentacionTraducida = documentosTraducidos
         tramite.avanzarEtapa()
         etapaRepository.save(tramite.etapa)
         val tramitePersistido = tramiteRepository.save(tramite)
@@ -88,12 +93,6 @@ class TramiteService {
         etapaRepository.save(tramite.etapa)
         tramiteRepository.save(tramite)
         return tramite.etapa
-    }
-
-    fun mostrarDocumentacion( id: Long): ResponseEntity<DocumentListDTO> {
-        val tramite= tramiteRepository.findById(id).get()
-        var lista = listOf(tramite.documentacionAVO,tramite.documentacionUsuario,tramite.documentacionDescendientes,tramite.documentacionTraducida).flatMap { it!! }
-        return ResponseEntity(DocumentListDTO(lista), HttpStatus.OK)
     }
 
     fun eliminar(id: Long) {

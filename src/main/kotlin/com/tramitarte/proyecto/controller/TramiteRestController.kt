@@ -1,7 +1,6 @@
 package com.tramitarte.proyecto.controller
 
 import com.tramitarte.proyecto.dominio.*
-import com.tramitarte.proyecto.service.DocumentacionService
 import com.tramitarte.proyecto.service.SolicitudAVOService
 import com.tramitarte.proyecto.service.TramiteService
 import com.tramitarte.proyecto.service.UsuarioService
@@ -35,12 +34,7 @@ class TramiteRestController {
     @Autowired
     lateinit var usuarioService: UsuarioService
 
-
-    @Autowired
-    lateinit var documentacionService: DocumentacionService
-
     val zipFileName = "Documentación-trámite"
-
 
     @GetMapping("/tramite/usuario/{idUsuario}")
     fun buscarTramitePorUsuario(@PathVariable idUsuario: Long): ResponseEntity<Tramite?> {
@@ -112,7 +106,6 @@ class TramiteRestController {
         }
     }
 
-
     @PostMapping("/carga/documentacion/traducida/{id}")
     fun cargaDocumentacionTraducida(
             @PathVariable id: Long,
@@ -122,31 +115,6 @@ class TramiteRestController {
             val tramite = tramiteService.cargarDocumentacionTraducida(id, documentacionTraducida)
             return tramite
         } catch (exception: IllegalArgumentException) {
-
-
-    @GetMapping("/documentacion/{id}")
-    fun mostrarDocumentacion(@PathVariable id: Long): ResponseEntity<DocumentListDTO> {
-        try {
-            return tramiteService.mostrarDocumentacion(id)
-        }
-        catch (exception: IllegalArgumentException) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
-        }
-    }
-
-
-
-    @PostMapping("/modificar/documento/{id}")
-    fun modificarDocumento(
-        @PathVariable id: Long,
-        @RequestBody documento: Documentacion
-    ): ResponseEntity<String> {
-        try {
-            val doc = documentacionService.modificar(id, documento)
-            return ResponseEntity("Documentación guardada con éxito", HttpStatus.OK)
-        } catch (exception: IllegalArgumentException) {
-
-
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, exception.message)
         }
     }

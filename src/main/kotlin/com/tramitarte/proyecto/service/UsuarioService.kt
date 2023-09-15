@@ -26,7 +26,7 @@ class UsuarioService {
 
     @Transactional
     fun buscarPorRol(rol: Rol): List<Usuario> {
-        return usuarioRepository.findAll()
+        return usuarioRepository.findAll().toList()
     }
     @Transactional
     fun buscarPorId(id: Long): Usuario? {

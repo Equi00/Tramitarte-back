@@ -44,7 +44,8 @@ class SolicitudAVOService {
     }
 
     private fun validarSiExisteSolicitud(solicitudAVO: SolicitudAVO) {
-        val solicitudPersistida = solicitudAVO.id?.let { solicitudAVORepository.findByIdOrNull(solicitudAVO.id) }
+        val solicitudId = solicitudAVO.id
+        val solicitudPersistida = solicitudId?.let { solicitudAVORepository.findByIdOrNull(it) }
         Assert.isTrue(solicitudPersistida !== null, "La solicitud a modificar no existe.")
     }
 

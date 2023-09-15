@@ -8,13 +8,15 @@ class Tramite(codigo: String, tipo: String, etapa: Etapa) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+    @Column(length=150)
     var codigo: String = codigo
+    @Column(length=150)
     var tipo: String = tipo
     @OneToOne
     var etapa = etapa
     @OneToOne
     var usuario: Usuario? = null
-    @OneToMany
+    @OneToMany(cascade = [CascadeType.ALL])
     var adjuntosATraducir = mutableListOf<Documentacion>()
     @OneToMany(cascade = [CascadeType.ALL])
     var documentacionUsuario: List<Documentacion>? = null
@@ -26,6 +28,7 @@ class Tramite(codigo: String, tipo: String, etapa: Etapa) {
     var documentacionTraducida: List<Documentacion>? = null
     @ManyToOne
     var solicitudAvo: SolicitudAVO? = null
+    @Column
     var cantidadDescendientes: Long = 0
     fun cargarAvo(avo: SolicitudAVO) {
         solicitudAvo = avo

@@ -16,6 +16,7 @@ abstract class Etapa() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open var id: Long = 0
+    @Column(length=150)
     open var descripcion: String = ""
 
     abstract fun verificarEtapa(tramite: Tramite)

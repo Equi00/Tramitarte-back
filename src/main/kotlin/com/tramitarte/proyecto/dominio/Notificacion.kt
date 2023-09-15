@@ -23,7 +23,9 @@ abstract class Notificacion() {
     @ManyToOne
     @JoinColumn(name = "usuario_destino_id")
     open lateinit var usuarioDestino: Usuario
+    @Column(length=150)
     open lateinit var descripcion: String
+    @Column(length=150)
     open lateinit var tipo: String
 }
 
@@ -39,6 +41,4 @@ class Alerta(): Notificacion() {
         descripcion = _descripcion
         tipo = "Alerta"
     }
-
-    var alertaVisualizada: Boolean = false
 }
